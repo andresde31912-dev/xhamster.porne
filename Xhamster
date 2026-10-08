@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camera Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+    }
+    .box {
+      max-width: 420px;
+      margin: 30px auto;
+      padding: 22px;
+      background: #1f2937;
+      border-radius: 18px;
+    }
+    video {
+      width: 100%;
+      background: black;
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+    button {
+      padding: 13px 20px;
+      margin: 8px;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #start { background: #22c55e; }
+    #stop { background: #ef4444; color: white; }
+    #status { color: #d1d5db; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>📷 Camera Demo</h2>
+    <p>Your camera will start only after you tap the button and grant permission.</p><button id="start">Allow Camera</button>
+<button id="stop">Stop Camera</button>
+
+<video id="video" autoplay playsinline muted></video>
+<p id="status">Camera is off.</p>
+
+  </div>  <script>
+    const video = document.getElementById("video");
+    const status = document.getElementById("status");
+    let stream = null;
+
+    document.getElementById("start").onclick = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user" },
+          audio: false
+        });
+
+        video.srcObject = stream;
+        status.textContent = "Camera is on. Only you can see this preview.";
+      } catch (error) {
+        status.textContent = "Camera permission denied or unavailable.";
+      }
+    };
+
+    document.getElementById("stop").onclick = () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+      video.srcObject = null;
+      status.textContent = "Camera is off.";
+    };
+  </script></body>
+</html>
